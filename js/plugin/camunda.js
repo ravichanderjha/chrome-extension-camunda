@@ -40,8 +40,9 @@ function getAllDMN(baseURL, refIdList){
 // Utility function to introduce a delay
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+// Fetch decision definitions with a delay between requests
 const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
-    const matchedDmnList = []; // Initialize the matchedDmnList array
+    const matchedDmnList = []; // Initialize the matched DMN list
 
     for (let i = 0; i < dt.length; i++) {
         const url = `${baseURL}/camunda/api/engine/engine/default/decision-definition/${dt[i].id}/xml`;
@@ -64,15 +65,20 @@ const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
         await delay(20);
     }
 
-    return matchedDmnList; // Return the results if needed
+    return matchedDmnList; // Return the results
 };
-function checkReferences(dt, baseURL, refIdList){
+
+// Main function to process data and open dashboard
+function checkReferences(dt, baseURL, refIdList) {
     fetchDecisionDefinitions(dt, refIdList, baseURL).then(result => {
         console.log('Matched DMN List:', result);
+
+        // Open the dashboard after all HTTP requests complete
         openDashboard();
-      
+
+        // Send data to generate an Excel file or further processing
         sendDatatoGetExcel(result);
-          });
+    });
 }
 
 function sendDatatoGetExcel(data) {
