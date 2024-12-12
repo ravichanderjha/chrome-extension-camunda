@@ -53,7 +53,7 @@ const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
             const data = await response.text();
 
             // Check for matched references
-            const matchedReferences = refIdList.filter(refId => data.search(refId));
+            const matchedReferences = refIdList.filter(refId => data.search(refId) > 0);
             if (matchedReferences.length > 0) {
                 matchedDmnList.push([decision.key, decision.resource, decision.name, matchedReferences]);
             }
@@ -96,6 +96,5 @@ function sendDatatoGetExcel(data) {
 
 function openDashboard() {
     chrome.runtime.sendMessage({ action: 'openPage', data: 'dashboard.html' }, function (response) {
-        console.log('Response:', response);
     });
 }
