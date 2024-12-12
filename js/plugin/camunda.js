@@ -44,8 +44,8 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
     const matchedDmnList = []; // Initialize the matched DMN list
 
-    for (let i = 0; i < dt.length; i++) {
-        const url = `${baseURL}/camunda/api/engine/engine/default/decision-definition/${dt[i].id}/xml`;
+    for (const decision of dt) {
+        const url = `${baseURL}/camunda/api/engine/engine/default/decision-definition/${decision.id}/xml`;
         
         try {
             // Fetch the data
@@ -53,9 +53,9 @@ const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
             const data = await response.text();
 
             // Check for matched references
-            const matchedReferences = refIdList.filter(refId => data.includes(refId));
+            const matchedReferences = refIdList.filter(refId => data.search(refId));
             if (matchedReferences.length > 0) {
-                matchedDmnList.push([dt[i].key, matchedReferences]);
+                matchedDmnList.push([decision.key, decision.resource, decision.name, matchedReferences]);
             }
         } catch (error) {
             console.error('Error fetching URL:', error);
@@ -69,16 +69,21 @@ const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
 };
 
 // Main function to process data and open dashboard
-function checkReferences(dt, baseURL, refIdList) {
-    fetchDecisionDefinitions(dt, refIdList, baseURL).then(result => {
+async function checkReferences(dt, baseURL, refIdList) {
+    try {
+        const result = await fetchDecisionDefinitions(dt, refIdList, baseURL);
         console.log('Matched DMN List:', result);
 
         // Open the dashboard after all HTTP requests complete
         openDashboard();
+        // Wait for 20ms before the next request
+        await delay(20);
 
         // Send data to generate an Excel file or further processing
         sendDatatoGetExcel(result);
-    });
+    } catch (error) {
+        console.error('Error in checkReferences:', error);
+    }
 }
 
 function sendDatatoGetExcel(data) {
