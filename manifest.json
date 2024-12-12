@@ -1,0 +1,41 @@
+{
+   "action": {
+      "default_icon": "icons/logo.png",
+      "default_title": "Camunda Utility",
+      "default_popup": "dmn-util.html"
+   },
+   "permissions": [
+      "storage",
+      "activeTab",
+      "contextMenus",
+      "scripting",
+      "tabs"
+   ],
+   "background": {
+      "service_worker": "js/mybg.js"
+   },
+   "content_scripts": [
+   ],
+   "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'"
+   },
+   "description": "Curo Kings - Utility.",
+   "host_permissions": [
+      "*://*/*"
+   ],
+   "icons": {
+      "128": "icons/logo.png",
+      "16": "icons/logo.png",
+      "32": "icons/logo.png",
+      "48": "icons/logo.png"
+   },
+   "manifest_version": 3,
+   "name": "Camunda Utility",
+   "version": "1.0.0",
+   "web_accessible_resources": [
+      {
+         "matches": ["<all_urls>"],
+         "resources": ["help.html", "auth/pay/*", "dmn-util.html", "injected.js", "css/*"]
+      }
+   ]
+}
