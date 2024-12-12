@@ -35,7 +35,7 @@
    "web_accessible_resources": [
       {
          "matches": ["<all_urls>"],
-         "resources": ["help.html", "auth/pay/*", "dmn-util.html", "injected.js", "css/*"]
+         "resources": ["help.html", "auth/pay/*", "dmn-util.html", "dashboard.html", "injected.js", "css/*"]
       }
    ]
 }
