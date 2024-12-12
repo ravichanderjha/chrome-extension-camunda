@@ -22,6 +22,7 @@ function getDmnListByRefId(refIdList) {
 }
 
 result={};
+matchedDmnList = [];
 
 
 function getAllDMN(baseURL, refIdList){
@@ -43,19 +44,20 @@ function checkReferences(dt, baseURL, refIdList){
       .then(data => {
           let matchedReferences = refIdList.filter(refId => data.includes(refId));
           if (matchedReferences.length > 0) {
-              console.log(dt[i].key, matchedReferences);
-              result[dt[i].key] = {
-                  dt:dt,
-                  matchedReferences: matchedReferences
-              };
+                matchedDmnList.push([dt[i].key, matchedReferences]);
+            //   console.log(dt[i].key, matchedReferences);
+            //   result[dt[i].key] = {
+            //       dt:dt,
+            //       matchedReferences: matchedReferences
+            //   };
           }      
       })
       .catch(error => console.error('Error fetching URL:', error));
   }
-  console.log(result);
+  console.log(matchedDmnList);
   openDashboard();
 
-  sendDatatoGetExcel(result);
+  sendDatatoGetExcel(matchedDmnList);
 }
 
 function sendDatatoGetExcel(data) {
