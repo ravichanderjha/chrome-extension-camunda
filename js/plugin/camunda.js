@@ -53,4 +53,21 @@ function checkReferences(dt, baseURL, refIdList){
       .catch(error => console.error('Error fetching URL:', error));
   }
   console.log(result);
+  openDashboard();
+
+  sendDatatoGetExcel(result);
+}
+
+function sendDatatoGetExcel(data) {
+    chrome.runtime.sendMessage({ action: 'getExcel', data: data }, function (response) {
+        console.log('Response:', response);
+    }
+    );
+}
+
+
+function openDashboard() {
+    chrome.runtime.sendMessage({ action: 'openPage', data: 'dashboard.html' }, function (response) {
+        console.log('Response:', response);
+    });
 }
