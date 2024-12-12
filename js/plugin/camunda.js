@@ -36,28 +36,43 @@ function getAllDMN(baseURL, refIdList){
     });
 }
 
-function checkReferences(dt, baseURL, refIdList){
-    for (let i = 0; i < dt.length; i++) {
-    const url = baseURL + `/camunda/api/engine/engine/default/decision-definition/${dt[i].id}/xml`;
-      fetch(url)
-      .then(response => response.text())
-      .then(data => {
-          let matchedReferences = refIdList.filter(refId => data.includes(refId));
-          if (matchedReferences.length > 0) {
-                matchedDmnList.push([dt[i].key, matchedReferences]);
-            //   console.log(dt[i].key, matchedReferences);
-            //   result[dt[i].key] = {
-            //       dt:dt,
-            //       matchedReferences: matchedReferences
-            //   };
-          }      
-      })
-      .catch(error => console.error('Error fetching URL:', error));
-  }
-  console.log(matchedDmnList);
-  openDashboard();
 
-  sendDatatoGetExcel(matchedDmnList);
+// Utility function to introduce a delay
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
+    const matchedDmnList = []; // Initialize the matchedDmnList array
+
+    for (let i = 0; i < dt.length; i++) {
+        const url = `${baseURL}/camunda/api/engine/engine/default/decision-definition/${dt[i].id}/xml`;
+        
+        try {
+            // Fetch the data
+            const response = await fetch(url);
+            const data = await response.text();
+
+            // Check for matched references
+            const matchedReferences = refIdList.filter(refId => data.includes(refId));
+            if (matchedReferences.length > 0) {
+                matchedDmnList.push([dt[i].key, matchedReferences]);
+            }
+        } catch (error) {
+            console.error('Error fetching URL:', error);
+        }
+
+        // Wait for 20ms before the next request
+        await delay(20);
+    }
+
+    return matchedDmnList; // Return the results if needed
+};
+function checkReferences(dt, baseURL, refIdList){
+    fetchDecisionDefinitions(dt, refIdList, baseURL).then(result => {
+        console.log('Matched DMN List:', result);
+        openDashboard();
+      
+        sendDatatoGetExcel(result);
+          });
 }
 
 function sendDatatoGetExcel(data) {
