@@ -60,9 +60,6 @@ const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
         } catch (error) {
             console.error('Error fetching URL:', error);
         }
-
-        // Wait for 20ms before the next request
-        await delay(20);
     }
 
     return matchedDmnList; // Return the results
@@ -71,14 +68,10 @@ const fetchDecisionDefinitions = async (dt, refIdList, baseURL) => {
 // Main function to process data and open dashboard
 async function checkReferences(dt, baseURL, refIdList) {
     try {
-        const result = await fetchDecisionDefinitions(dt, refIdList, baseURL);
-        console.log('Matched DMN List:', result);
-
         // Open the dashboard after all HTTP requests complete
         openDashboard();
-        // Wait for 20ms before the next request
-        await delay(20);
-
+        const result = await fetchDecisionDefinitions(dt, refIdList, baseURL);
+        console.log('Matched DMN List:', result);
         // Send data to generate an Excel file or further processing
         sendDatatoGetExcel(result);
     } catch (error) {
